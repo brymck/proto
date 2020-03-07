@@ -1,27 +1,36 @@
-plugins {
-    id 'java-library'
-    id 'com.bmuschko.nexus'
+buildscript {
+    repositories {
+        maven {
+            url "https://jcenter.bintray.com"
+        }
+    }
+    dependencies {
+        classpath 'com.bmuschko:gradle-nexus-plugin:2.3.1'
+    }
 }
 
-archivesBaseName = '{{ artifactName }}'
+plugins {
+    id 'java-library'
+    id 'maven-publish'
+    id 'com.bmuschko.nexus' version '2.3.1'
+}
+
+archivesBaseName = 'brymck-{{ artifactName }}'
 group 'com.github.brymck'
 version '{{ artifactVersion }}'
 
-task sourcesJar(type: Jar, dependsOn: classes) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
-}
-
 repositories {
-    jcentral()
+    maven {
+        url "https://jcenter.bintray.com"
+    }
 }
 
 modifyPom {
     project {
-        name '{{ artifactName }}'
+        name 'brymck-{{ artifactName }}'
         description 'Some description'
         url 'https://github.com/brymck/proto'
-        inceptionYear '2018'
+        inceptionYear '2020'
 
         scm {
             url 'https://github.com/brymck/proto'
@@ -49,7 +58,6 @@ modifyPom {
 }
 
 dependencies {
-    classpath 'com.bmuschko:gradle-nexus-plugin:2.3.1'
     implementation 'com.google.protobuf:protobuf-java:{{ protobufVersion }}'
 {%- if hasServices %}
     implementation 'io.grpc:grpc-netty-shaded:{{ grpcVersion }}'
