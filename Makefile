@@ -60,7 +60,10 @@ requirements.txt: requirements.package.txt requirements.build.txt requirements.d
 #-----------------------------------------------------------------------------------------------------------------------
 
 # Dependencies
-dependencies: dependencies/descriptor_set.json dependencies/descriptor_set.pb dependencies/lists/.dirstamp
+dependencies: dependencies/.dirstamp
+
+dependencies/.dirstamp: dependencies/descriptor_set.json dependencies/descriptor_set.pb dependencies/lists/.dirstamp
+	touch $@
 
 define set_up_volumes_for
 	$(DOCKER) rm configs || true
@@ -115,7 +118,7 @@ define copy_generated_code
 endef
 
 # Go
-packages/go/%/go.mod: gen/.dirstamp
+packages/go/%/go.mod: dependencies/.dirstamp gen/.dirstamp
 	$(call copy_generated_code,go,$*,$(dir $@),)
 # Replace the weird import in Go libraries with the path we want
 	find $(dir $@) -name '*.go' -exec sed -i.bak 's#github.com/$(PARENT_PACKAGE)/gen/go/$(PARENT_PACKAGE)#github.com/$(PARENT_PACKAGE)/protobufs#g' {} \;
@@ -124,19 +127,19 @@ packages/go/%/go.mod: gen/.dirstamp
 package-go: $(foreach package,$(PACKAGES),packages/go/$(package)/go.mod)
 
 # Java
-packages/java/%/pom.xml: gen/.dirstamp
+packages/java/%/pom.xml: dependencies/.dirstamp gen/.dirstamp
 	$(call copy_generated_code,java,$*,$(dir $@)/src/main/java/com/github/$(PARENT_PACKAGE)/$*,com/github/)
 	python bin/templates.py $* java $(BASE_VERSION) $(COMMITS_SINCE_LAST_TAG) $(IS_RELEASE)
 package-java: $(foreach package,$(PACKAGES),packages/java/$(package)/pom.xml)
 
 # Node
-packages/node/%/package.json: gen/.dirstamp
+packages/node/%/package.json: dependencies/.dirstamp gen/.dirstamp
 	$(call copy_generated_code,node,$*,$(dir $@),)
 	python bin/templates.py $* node $(BASE_VERSION) $(COMMITS_SINCE_LAST_TAG) $(IS_RELEASE)
 package-node: $(foreach package,$(PACKAGES),packages/node/$(package)/package.json)
 
 # Python
-packages/python/%/setup.py: gen/.dirstamp
+packages/python/%/setup.py: dependencies/.dirstamp gen/.dirstamp
 	$(call copy_generated_code,python,$*,$(dir $@)/$(PARENT_PACKAGE)/$*,)
 # Create __init__.py so Python recognizes directory contents
 	find $(dir $@)/$(PARENT_PACKAGE) -type d -exec touch {}/__init__.py \;
@@ -190,7 +193,7 @@ packages/go/%/.deployed.dirstamp: packages/go/%/go.sum
 deploy-go: $(foreach package,$(PACKAGES),packages/go/$(package)/.deployed.dirstamp)
 
 packages/java/%/.deployed.dirstamp: packages/java/%/target/.dirstamp
-	(cd $(dir $@) && mvn release deploy)
+	(cd $(dir $@) && mvn --activate-profiles release deploy)
 	touch $@
 deploy-java: $(foreach package,$(PACKAGES),packages/java/$(package)/.deployed.dirstamp)
 
