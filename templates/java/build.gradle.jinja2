@@ -13,6 +13,7 @@ plugins {
     id 'java-library'
     id 'maven-publish'
     id 'com.bmuschko.nexus' version '2.3.1'
+    id 'io.codearte.nexus-staging' version '0.11.0'
 }
 
 archivesBaseName = 'brymck-{{ artifactName }}'
@@ -65,7 +66,7 @@ dependencies {
     implementation 'io.grpc:grpc-stub:{{ grpcVersion }}'
 {%- endif %}
 {%- for dependency in dependencies %}
-    compile group: 'com.github.brymck', name: '{{ dependency }}', version: '{{ artifactVersion }}'
+    compile group: 'com.github.brymck', name: 'brymck-{{ dependency }}', version: '{{ artifactVersion }}'
 {%- endfor %}
 }
 
