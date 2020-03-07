@@ -11,7 +11,7 @@ dependencies_dir = project_dir / 'dependencies'
 # Constants
 grpc_version = '1.26.0'
 protoc_version = '1.3.2'
-protobuf_version = '3.11.2'
+protobuf_version = '3.11.4'
 
 
 def get_packages_with_services():

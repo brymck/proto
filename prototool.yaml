@@ -1,5 +1,5 @@
 protoc:
-  version: 3.10.0
+  version: 3.11.4
 lint:
   group: uber2
   java_package_prefix: com.github
