@@ -1,0 +1,8 @@
+{%- if hasServices %}
+grpcio=={{ grpcVersion }}
+grpcio-tools=={{ grpcVersion }}
+{%- endif %}
+protobuf=={{ protobufVersion }}
+{%- for dependency in dependencies %}
+brymck-{{ dependency }}
+{%- endfor %}

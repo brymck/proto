@@ -1,0 +1,52 @@
+syntax = "proto3";
+
+package brymck.risk.v1;
+
+option csharp_namespace = "Brymck.Risk.V1";
+option go_package = "riskv1";
+option java_multiple_files = true;
+option java_outer_classname = "RiskApiProto";
+option java_package = "com.github.brymck.risk.v1";
+option objc_class_prefix = "BRX";
+option php_namespace = "Brymck\\Risk\\V1";
+
+import "brymck/risk/v1/covariance.proto";
+import "brymck/risk/v1/frequency.proto";
+import "brymck/risk/v1/return_time_series_entry.proto";
+
+// The RiskAPI retrieves calculations derived from an ex ante risk model.
+service RiskAPI {
+  // GetRisk gets ex ante risk for a security.
+  rpc GetRisk(GetRiskRequest) returns (GetRiskResponse);
+  // GetCovariances retrieves covariances for a list of securities.
+  rpc GetCovariances(GetCovariancesRequest) returns (GetCovariancesResponse);
+  // GetReturnTimeSeries retrieves the return time series for a security.
+  rpc GetReturnTimeSeries(GetReturnTimeSeriesRequest) returns (GetReturnTimeSeriesResponse);
+}
+
+message GetRiskRequest {
+  uint64 security_id = 1;
+  Frequency frequency = 2;
+}
+
+message GetRiskResponse {
+  double risk = 1;
+}
+
+message GetCovariancesRequest {
+  repeated uint64 security_ids = 1;
+  Frequency frequency = 2;
+}
+
+message GetCovariancesResponse {
+  repeated CovariancePair covariances = 1;
+}
+
+message GetReturnTimeSeriesRequest {
+  uint64 security_id = 1;
+  Frequency frequency = 2;
+}
+
+message GetReturnTimeSeriesResponse {
+  repeated ReturnTimeSeriesEntry entries = 1;
+}

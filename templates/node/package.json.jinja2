@@ -1,0 +1,14 @@
+{
+  "name": "@brymck/{{ artifactName }}",
+  "version": "{{ artifactVersion }}",
+  "description": "",
+  "main": "index.js",
+  "author": "Bryan McKelvey <bryan.mckelvey@gmail.com>",
+  "license": "UNLICENSED",
+  "dependencies": {
+{%- for dependency in dependencies %}
+    "@brymck/{{ dependency }}": "^{{ artifactVersion }}",
+{%- endfor %}
+    "google-protobuf": "^{{ protobufVersion }}"
+  }
+}

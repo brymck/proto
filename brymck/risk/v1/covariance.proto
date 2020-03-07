@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package brymck.risk.v1;
+
+option csharp_namespace = "Brymck.Risk.V1";
+option go_package = "riskv1";
+option java_multiple_files = true;
+option java_outer_classname = "CovarianceProto";
+option java_package = "com.github.brymck.risk.v1";
+option objc_class_prefix = "BRX";
+option php_namespace = "Brymck\\Risk\\V1";
+
+// A CovariancePair is a tuple consisting of two security IDs and their covariance.
+message CovariancePair {
+  uint64 security_id1 = 1;
+  uint64 security_id2 = 2;
+  double covariance = 3;
+}

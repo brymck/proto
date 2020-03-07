@@ -1,0 +1,64 @@
+syntax = "proto3";
+
+package brymck.securities.v1;
+
+option csharp_namespace = "Brymck.Securities.V1";
+option go_package = "securitiesv1";
+option java_multiple_files = true;
+option java_outer_classname = "SecuritiesApiProto";
+option java_package = "com.github.brymck.securities.v1";
+option objc_class_prefix = "BSX";
+option php_namespace = "Brymck\\Securities\\V1";
+
+import "brymck/dates/v1/date.proto";
+import "brymck/securities/v1/price.proto";
+import "brymck/securities/v1/security.proto";
+
+// SecuritiesAPI provides access to securities.
+service SecuritiesAPI {
+  // GetSecurity retrieves a full security data object.
+  rpc GetSecurity(GetSecurityRequest) returns (GetSecurityResponse);
+  // GetSecurity inserts a new security.
+  rpc InsertSecurity(InsertSecurityRequest) returns (InsertSecurityResponse);
+  // GetPrices retrieves the prices for a specified security.
+  rpc GetPrices(GetPricesRequest) returns (GetPricesResponse);
+  // UpdatePrices updates prices.
+  rpc UpdatePrices(UpdatePricesRequest) returns (UpdatePricesResponse);
+}
+
+message GetSecurityRequest {
+  uint64 id = 1;
+  string symbol = 2;
+}
+
+message GetSecurityResponse {
+  Security security = 1;
+}
+
+message InsertSecurityRequest {
+  Security security = 1;
+}
+
+message InsertSecurityResponse {
+  uint64 id = 1;
+}
+
+message GetPricesRequest {
+  uint64 id = 1;
+  brymck.dates.v1.Date start_date = 2;
+  brymck.dates.v1.Date end_date = 3;
+}
+
+message GetPricesResponse {
+  repeated Price prices = 1;
+}
+
+message UpdatePricesRequest {
+  uint64 id = 1;
+  string symbol = 2;
+  bool full = 3;
+}
+
+message UpdatePricesResponse {
+  uint64 count = 1;
+}

@@ -1,0 +1,18 @@
+syntax = "proto3";
+
+package brymck.risk.v1;
+
+option csharp_namespace = "Brymck.Risk.V1";
+option go_package = "riskv1";
+option java_multiple_files = true;
+option java_outer_classname = "FrequencyProto";
+option java_package = "com.github.brymck.risk.v1";
+option objc_class_prefix = "BRX";
+option php_namespace = "Brymck\\Risk\\V1";
+
+// A Frequency is a frequency.
+enum Frequency {
+  FREQUENCY_INVALID = 0;
+  FREQUENCY_DAILY = 1;
+  FREQUENCY_MONTHLY = 2;
+}

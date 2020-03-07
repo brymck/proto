@@ -1,0 +1,7 @@
+.idea/
+dependencies/
+gen/
+packages/
+site/
+venv/
+site.tar

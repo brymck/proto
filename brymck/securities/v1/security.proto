@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package brymck.securities.v1;
+
+option csharp_namespace = "Brymck.Securities.V1";
+option go_package = "securitiesv1";
+option java_multiple_files = true;
+option java_outer_classname = "SecurityProto";
+option java_package = "com.github.brymck.securities.v1";
+option objc_class_prefix = "BSX";
+option php_namespace = "Brymck\\Securities\\V1";
+
+// Security is the main security object.
+message Security {
+  uint64 id = 1;
+  string symbol = 2;
+  string name = 3;
+  double price = 4;
+}

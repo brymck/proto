@@ -1,0 +1,38 @@
+protoc:
+  version: 3.10.0
+lint:
+  group: uber2
+  java_package_prefix: com.github
+generate:
+  go_options:
+    import_path: github.com/brymck/genproto
+  plugins:
+    # Go
+    - name: go
+      type: go
+      flags: plugins=grpc
+      output: gen/go
+
+    # Java
+    - name: java
+      output: gen/java
+    - name: grpc-java
+      output: gen/java
+
+    # Node
+    - name: js
+      flags: import_style=commonjs,binary
+      output: gen/node
+    - name: ts
+      flags: service=grpc-node
+      output: gen/node
+    - name: grpc-node
+      path: grpc_node_plugin
+      output: gen/node
+
+    # Python
+    - name: python
+      output: gen/python
+    - name: grpc-python
+      path: grpc_python_plugin
+      output: gen/python

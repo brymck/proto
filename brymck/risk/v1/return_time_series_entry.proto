@@ -1,0 +1,19 @@
+syntax = "proto3";
+
+package brymck.risk.v1;
+
+option csharp_namespace = "Brymck.Risk.V1";
+option go_package = "riskv1";
+option java_multiple_files = true;
+option java_outer_classname = "ReturnTimeSeriesEntryProto";
+option java_package = "com.github.brymck.risk.v1";
+option objc_class_prefix = "BRX";
+option php_namespace = "Brymck\\Risk\\V1";
+
+import "brymck/dates/v1/date.proto";
+
+// A ReturnTimeSeriesEntry contains a date and relevant return metrics.
+message ReturnTimeSeriesEntry {
+  brymck.dates.v1.Date date = 1;
+  double return = 2;
+}

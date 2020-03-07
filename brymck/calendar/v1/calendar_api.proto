@@ -1,0 +1,36 @@
+syntax = "proto3";
+
+package brymck.calendar.v1;
+
+option csharp_namespace = "Brymck.Calendar.V1";
+option go_package = "calendarv1";
+option java_multiple_files = true;
+option java_outer_classname = "CalendarApiProto";
+option java_package = "com.github.brymck.calendar.v1";
+option objc_class_prefix = "BCX";
+option php_namespace = "Brymck\\Calendar\\V1";
+
+import "brymck/dates/v1/date.proto";
+
+// CalendarAPI is the calendar API.
+service CalendarAPI {
+  // GetDates retrieves dates.
+  rpc GetDates(GetDatesRequest) returns (GetDatesResponse);
+  // GetLatestBusinessDay retrieves the latest business day.
+  rpc GetLatestBusinessDay(GetLatestBusinessDayRequest) returns (GetLatestBusinessDayResponse);
+}
+
+message GetDatesRequest {
+  brymck.dates.v1.Date start_date = 1;
+  brymck.dates.v1.Date end_date = 2;
+}
+
+message GetDatesResponse {
+  repeated brymck.dates.v1.Date dates = 1;
+}
+
+message GetLatestBusinessDayRequest {}
+
+message GetLatestBusinessDayResponse {
+  brymck.dates.v1.Date date = 1;
+}
