@@ -124,10 +124,10 @@ packages/go/%/go.mod: gen/.dirstamp
 package-go: $(foreach package,$(PACKAGES),packages/go/$(package)/go.mod)
 
 # Java
-packages/java/%/build.gradle: gen/.dirstamp
-	$(call copy_generated_code,java,$*,$(dir $@)/src/com/github/$(PARENT_PACKAGE)/$*,com/github/)
+packages/java/%/pom.xml: gen/.dirstamp
+	$(call copy_generated_code,java,$*,$(dir $@)/src/main/java/com/github/$(PARENT_PACKAGE)/$*,com/github/)
 	python bin/templates.py $* java $(BASE_VERSION) $(COMMITS_SINCE_LAST_TAG) $(IS_RELEASE)
-package-java: $(foreach package,$(PACKAGES),packages/java/$(package)/build.gradle)
+package-java: $(foreach package,$(PACKAGES),packages/java/$(package)/pom.xml)
 
 # Node
 packages/node/%/package.json: gen/.dirstamp
@@ -155,13 +155,13 @@ build: build-go build-java build-node build-python
 
 build-go: # noop
 
-packages/java/%/build/.dirstamp: packages/java/%/build.gradle
+packages/java/%/target/.dirstamp: packages/java/%/pom.xml
 # Install local dependencies
-	cat dependencies/lists/$*.txt | xargs -I {} $(MAKE) packages/java/{}/build/.dirstamp
+	cat dependencies/lists/$*.txt | xargs -I {} $(MAKE) packages/java/{}/target/.dirstamp
 # Build and publish to local Maven repository for dependent libraries
-	(cd $(dir $<) && gradle -q build publishToMavenLocal)
+	(cd $(dir $<) && mvn install)
 	touch $@
-build-java: package-java $(foreach package,$(PACKAGES),packages/java/$(package)/build/.dirstamp)
+build-java: package-java $(foreach package,$(PACKAGES),packages/java/$(package)/target/.dirstamp)
 
 packages/node/%/package-lock.json: packages/node/%/package.json
 # Build local dependencies
@@ -185,22 +185,22 @@ build-python: package-python $(foreach package,$(PACKAGES),packages/python/$(pac
 deploy: deploy-go deploy-java deploy-node deploy-python
 
 packages/go/%/.deployed.dirstamp: packages/go/%/go.sum
-	cd $(dir $@) && (cat VERSION | xargs -I {} jfrog rt go-publish go 'v{}')
+	(cd $(dir $@) && (cat VERSION | xargs -I {} jfrog rt go-publish go 'v{}'))
 	touch $@
 deploy-go: $(foreach package,$(PACKAGES),packages/go/$(package)/.deployed.dirstamp)
 
-packages/java/%/.deployed.dirstamp: packages/java/%/build/.dirstamp
-	cd $(dir $@) && gradle -q clean publish
+packages/java/%/.deployed.dirstamp: packages/java/%/target/.dirstamp
+	(cd $(dir $@) && mvn release deploy)
 	touch $@
 deploy-java: $(foreach package,$(PACKAGES),packages/java/$(package)/.deployed.dirstamp)
 
 packages/node/%/.deployed.dirstamp: packages/node/%/package-lock.json
-	cd $(dir $@) && npm publish
+	(cd $(dir $@) && npm publish)
 	touch $@
 deploy-node: $(foreach package,$(PACKAGES),packages/node/$(package)/.deployed.dirstamp)
 
 packages/python/%/.deployed.dirstamp: packages/python/%/.dirstamp
-	cd $(dir $@) && twine upload -r local dist/*
+	(cd $(dir $@) && twine upload -r local dist/*)
 	touch $@
 deploy-python: $(foreach package,$(PACKAGES),packages/python/$(package)/.deployed.dirstamp)
 
