@@ -121,7 +121,7 @@ endef
 packages/go/%/go.mod: dependencies/.dirstamp gen/.dirstamp
 	$(call copy_generated_code,go,$*,$(dir $@),)
 # Replace the weird import in Go libraries with the path we want
-	find $(dir $@) -name '*.go' -exec sed -i.bak 's#github.com/$(PARENT_PACKAGE)/gen/go/$(PARENT_PACKAGE)#github.com/$(PARENT_PACKAGE)/protobufs#g' {} \;
+	find $(dir $@) -name '*.go' -exec sed -i.bak 's#github.com/$(PARENT_PACKAGE)/genproto/gen/go/$(PARENT_PACKAGE)#github.com/$(PARENT_PACKAGE)/genproto#g' {} \;
 	find $(dir $@) -name '*.bak' -delete
 	python bin/templates.py $* go $(BASE_VERSION) $(COMMITS_SINCE_LAST_TAG) $(IS_RELEASE)
 package-go: $(foreach package,$(PACKAGES),packages/go/$(package)/go.mod)
