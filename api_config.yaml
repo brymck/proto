@@ -1,0 +1,17 @@
+type: google.api.Service
+config_version: 3
+name: gateway-4tt23pryoq-an.a.run.app
+title: Bryan's APIs
+apis:
+  - name: brymck.calendar.v1.CalendarAPI
+  - name: brymck.risk.v1.RiskAPI
+  - name: brymck.securities.v1.SecuritiesAPI
+backend:
+  rules:
+    - selector: "brymck.calendar.v1.*"
+      address: grpcs://calendar-service-4tt23pryoq-an.a.run.app
+    - selector: "brymck.risk.v1.*"
+      address: grpcs://risk-service-4tt23pryoq-an.a.run.app
+    - selector: "brymck.securities.v1.*"
+      address: grpcs://securities-service-4tt23pryoq-an.a.run.app
+

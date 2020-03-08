@@ -4,4 +4,5 @@ gen/
 packages/
 site/
 venv/
+api_descriptor.pb
 site.tar
