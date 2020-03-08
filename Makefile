@@ -27,10 +27,18 @@ prototool: dependencies/descriptor_set.json dependencies/descriptor_set.pb gener
 lint:
 	$(PROTOTOOL) lint .
 
+define set_up_volumes_for
+	$(DOCKER) rm configs || true
+	$(DOCKER) create -v /work --name configs alpine:3.4 /bin/true
+	$(DOCKER) cp $(CURDIR)/. configs:/work
+	$(DOCKER) rm $(1) || true
+endef
+
 $(PARENT_PACKAGE):
 	mkdir -p $@
 
 $(PARENT_PACKAGE)/%.proto: | $(PARENT_PACKAGE)
+	$(call set_up_volumes_for,prototool)
 	$(PROTOTOOL) create $@
 
 #-----------------------------------------------------------------------------------------------------------------------
@@ -64,13 +72,6 @@ dependencies: dependencies/.dirstamp
 
 dependencies/.dirstamp: dependencies/descriptor_set.json dependencies/descriptor_set.pb dependencies/lists/.dirstamp
 	touch $@
-
-define set_up_volumes_for
-	$(DOCKER) rm configs || true
-	$(DOCKER) create -v /work --name configs alpine:3.4 /bin/true
-	$(DOCKER) cp $(CURDIR)/. configs:/work
-	$(DOCKER) rm $(1) || true
-endef
 
 dependencies/descriptor_set.json: $(PROTOS)
 	mkdir -p $(dir $@)
@@ -156,6 +157,10 @@ package-python: $(foreach package,$(PACKAGES),packages/python/$(package)/setup.p
 
 build: build-go build-java build-node build-python
 
+config/api_descriptor.pb: $(PROTOS)
+	find brymck -name '*.proto' -print0 | xargs -0 protoc --proto_path=. --include_imports --include_source_info --descriptor_set_out=config/api_descriptor.pb
+build-config: config/api_descriptor.pb
+
 build-go: # noop
 
 packages/java/%/target/.dirstamp: packages/java/%/pom.xml
@@ -185,7 +190,12 @@ build-python: package-python $(foreach package,$(PACKAGES),packages/python/$(pac
 # Deploy libraries
 #-----------------------------------------------------------------------------------------------------------------------
 
-deploy: deploy-go deploy-java deploy-node deploy-python
+deploy: deploy-config deploy-go deploy-java deploy-node deploy-python
+
+config/.dirstamp: config/api_descriptor.pb
+	gcloud endpoints services deploy config/api_descriptor.pb config/api_config.yaml
+	touch $@
+deploy-config: config/.dirstamp
 
 packages/go/%/.deployed.dirstamp: packages/go/%/go.sum
 	(cd $(dir $@) && (cat VERSION | xargs -I {} jfrog rt go-publish go 'v{}'))
@@ -212,7 +222,7 @@ deploy-python: $(foreach package,$(PACKAGES),packages/python/$(package)/.deploye
 #-----------------------------------------------------------------------------------------------------------------------
 
 clean:
-	rm -rf dependencies gen packages venv
+	rm -rf config/api_descriptor.pb dependencies gen packages venv
 
 .PHONY: \
 	all \
@@ -226,6 +236,8 @@ clean:
 	$(foreach language,$(LANGUAGES),package-$(language)) \
 	build \
 	$(foreach language,$(LANGUAGES),build-$(language)) \
+	build-config \
 	deploy \
 	$(foreach language,$(LANGUAGES),deploy-$(language)) \
+	deploy-config \
 	clean
