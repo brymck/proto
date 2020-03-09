@@ -24,16 +24,6 @@ aliases:
       command: |
         if [ ! -d venv ]; then python -m venv venv; fi
         echo "source $(pwd)/venv/bin/activate" >> $BASH_ENV
-  - &set-up-gradle-properties
-    run:
-      name: Set up gradle.properties
-      command: |
-        mkdir -p ~/.gradle
-        cat <<EOF > ~/.gradle/gradle.properties
-        artifactory_user=${ARTIFACTORY_USERNAME}
-        artifactory_password=${ARTIFACTORY_PASSWORD}
-        artifactory_contextUrl=https://brymck.jfrog.io/brymck
-        EOF
   - &set-up-pypirc
     run:
       name: Set up .pypirc
@@ -180,7 +170,6 @@ jobs:
       - attach_workspace:
           at: .
       - *touch-persisted-files
-      - *set-up-gradle-properties
       - run:
           name: Build Java libraries
           command: make build-java
@@ -268,7 +257,6 @@ jobs:
       - attach_workspace:
           at: .
       - *touch-persisted-files
-      - *set-up-gradle-properties
       - run:
           name: Deploy Java libraries
           command: make deploy-java
