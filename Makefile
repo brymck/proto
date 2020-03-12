@@ -174,7 +174,7 @@ packages/java/%/target/.dirstamp: packages/java/%/pom.xml
 # Install local dependencies
 	cat dependencies/lists/$*.txt | xargs -I {} $(MAKE) packages/java/{}/target/.dirstamp
 # Build and publish to local Maven repository for dependent libraries
-	(cd $(dir $<) && mvn install)
+	(cd $(dir $<) && mvn $(MAVEN_CLI_OPTS) install)
 	touch $@
 build-java: package-java $(foreach package,$(PACKAGES),packages/java/$(package)/target/.dirstamp)
 
@@ -214,7 +214,7 @@ deployments/genproto/go.mod: $(foreach package,$(PACKAGES),packages/go/$(package
 deploy-go: deployments/genproto/go.mod
 
 packages/java/%/.deployed.dirstamp: packages/java/%/target/.dirstamp
-	(cd $(dir $@) && mvn --activate-profiles release deploy)
+	(cd $(dir $@) && mvn $(MAVEN_CLI_OPTS) --activate-profiles release deploy)
 	touch $@
 deploy-java: $(foreach package,$(PACKAGES),packages/java/$(package)/.deployed.dirstamp)
 

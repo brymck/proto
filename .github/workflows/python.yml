@@ -33,6 +33,12 @@ jobs:
           username = ${{ secrets.PYPI_USERNAME }}
           password = ${{ secrets.PYPI_PASSWORD }}
           EOF
+      - name: Cache dependencies
+        uses: actions/cache@v1
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('templates/python/requirements.txt.jinja2') }}
+          restore-keys: ${{ runner.os }}-pip-
       - name: Generate and build packages
         run: make build-python
       - name: Deploy packages

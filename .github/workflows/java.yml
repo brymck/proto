@@ -1,4 +1,5 @@
 name: Java
+
 on:
   push:
     branches: 
@@ -6,15 +7,15 @@ on:
   pull_request:
     branches:
       - master
+env:
+  MAVEN_CLI_OPTS: --batch-mode
+  OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+  OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+  OSSRH_GPG_PASSPHRASE: ${{ secrets.OSSRH_GPG_PASSPHRASE }}
+  OSSRH_GPG_KEYNAME: ${{ secrets.OSSRH_GPG_KEYNAME }}
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      MAVEN_CLI_OPTS: --batch-mode
-      OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
-      OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
-      OSSRH_GPG_PASSPHRASE: ${{ secrets.OSSRH_GPG_PASSPHRASE }}
-      OSSRH_GPG_KEYNAME: ${{ secrets.OSSRH_GPG_KEYNAME }}
     steps:
       - name: Check out repo
         uses: actions/checkout@v2
@@ -36,6 +37,12 @@ jobs:
         run: cp config/settings.xml ~/.m2/settings.xml
       - name: Import GPG key
         run: echo "${{ secrets.OSSRH_GPG_KEY }}" | base64 --decode | gpg --import --no-tty --batch --yes
+      - name: Cache dependencies
+        uses: actions/cache@v1
+        with:
+          path: ~/.m2/repository
+          key: ${{ runner.os }}-maven-${{ hashFiles('templates/java/pom.xml.jinja2') }}
+          restore-keys: ${{ runner.os }}-maven-
       - name: Generate and build artifacts
         run: make build-java
       - name: Deploy artifacts
