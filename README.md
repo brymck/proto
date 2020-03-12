@@ -1,6 +1,10 @@
 protobufs
 =========
 
+![Go](https://github.com/brymck/proto/workflows/Go/badge.svg)
+![Java](https://github.com/brymck/proto/workflows/Java/badge.svg)
+![Python](https://github.com/brymck/proto/workflows/Python/badge.svg)
+
 [Protobufs][protobufs] for brymck.io.
 
 Table of contents
