@@ -211,7 +211,6 @@ deployments/genproto/go.mod: $(foreach package,$(PACKAGES),packages/go/$(package
 	find $(dir $@)/$(PARENT_PACKAGE) -name .dirstamp -delete
 	(cd $(dir $@) && go mod tidy)
 	(cd $(dir $@) && git add --all && git diff --cached --quiet || (git commit --message Update && git push))
-
 deploy-go: deployments/genproto/go.mod
 
 packages/java/%/.deployed.dirstamp: packages/java/%/target/.dirstamp

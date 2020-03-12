@@ -1,4 +1,4 @@
-name: Go
+name: Python
 on:
   push:
     branches: 
@@ -21,9 +21,9 @@ jobs:
         with:
           python-version: 3.8
       - name: Install Python dependencies
-        run: pip install --requirement requirements.package.txt
-      - name: Generate library
-        run: make build-go
-      - name: Deploy library
+        run: pip install --requirement requirements.txt
+      - name: Generate and build packages
+        run: make build-python
+      - name: Deploy packages
         if: github.ref == 'refs/heads/master'
-        run: make deploy-go GITHUB_TOKEN=${{ secrets.REPO_TOKEN }}
+        run: make deploy-python
