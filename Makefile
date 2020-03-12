@@ -162,7 +162,7 @@ config/api_descriptor.pb: $(PROTOS)
 	find brymck -name '*.proto' -print0 | xargs -0 protoc --proto_path=. --include_imports --include_source_info --descriptor_set_out=config/api_descriptor.pb
 build-config: config/api_descriptor.pb
 
-build-go: # noop
+build-go: $(foreach package,$(PACKAGES),packages/go/$(package)/.dirstamp)
 
 packages/java/%/target/.dirstamp: packages/java/%/pom.xml
 # Install local dependencies
