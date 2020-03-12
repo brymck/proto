@@ -1,0 +1,19 @@
+name: go
+on:
+  push:
+    branches: 
+      - master
+  pull_request:
+    branches:
+      - master
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repo
+        uses: actions/checkout@v2
+      - name: Generate and build Go libraries
+        run: make build-go
+      - name: Deploy Go libraries
+        if: github.ref == 'refs/heads/master'
+        run: make deploy-go
