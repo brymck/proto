@@ -119,13 +119,14 @@ define copy_generated_code
 endef
 
 # Go
-packages/go/%/go.mod: dependencies/.dirstamp gen/.dirstamp
+packages/go/%/.dirstamp: dependencies/.dirstamp gen/.dirstamp
 	$(call copy_generated_code,go,$*,$(dir $@),)
 # Replace the weird import in Go libraries with the path we want
 	find $(dir $@) -name '*.go' -exec sed -i.bak 's#github.com/$(PARENT_PACKAGE)/genproto/gen/go#github.com/$(PARENT_PACKAGE)/genproto#g' {} \;
 	find $(dir $@) -name '*.bak' -delete
 	python bin/templates.py $* go $(BASE_VERSION) $(COMMITS_SINCE_LAST_TAG) $(IS_RELEASE)
-package-go: $(foreach package,$(PACKAGES),packages/go/$(package)/go.mod)
+	touch $@
+package-go: $(foreach package,$(PACKAGES),packages/go/$(package)/.dirstamp)
 
 # Java
 packages/java/%/pom.xml: dependencies/.dirstamp gen/.dirstamp
@@ -197,10 +198,14 @@ config/.dirstamp: config/api_descriptor.pb
 	touch $@
 deploy-config: config/.dirstamp
 
-packages/go/%/.deployed.dirstamp: packages/go/%/go.sum
-	(cd $(dir $@) && (cat VERSION | xargs -I {} jfrog rt go-publish go 'v{}'))
-	touch $@
-deploy-go: $(foreach package,$(PACKAGES),packages/go/$(package)/.deployed.dirstamp)
+deployments/genproto/go.mod: $(foreach package,$(PACKAGES),packages/go/$(package)/.dirstamp)
+	[ -d $(dir $@) ] && git pull $(dir $@) || git clone --depth 1 git@github.com:brymck/genproto.git $(dir $@)
+	rm -rf $(dir $@)/$(PARENT_PACKAGE)
+	cp -r packages/go/ $(dir $@)/$(PARENT_PACKAGE)
+	find $(dir $@)/$(PARENT_PACKAGE) -name .dirstamp -delete
+	(cd $(dir $@) && git add --all && git diff --cached --quiet || (git commit --message Update && git push))
+
+deploy-go: deployments/genproto/go.mod
 
 packages/java/%/.deployed.dirstamp: packages/java/%/target/.dirstamp
 	(cd $(dir $@) && mvn --activate-profiles release deploy)
@@ -222,7 +227,7 @@ deploy-python: $(foreach package,$(PACKAGES),packages/python/$(package)/.deploye
 #-----------------------------------------------------------------------------------------------------------------------
 
 clean:
-	rm -rf config/api_descriptor.pb dependencies gen packages venv
+	rm -rf config/api_descriptor.pb dependencies deployments gen packages venv
 
 .PHONY: \
 	all \

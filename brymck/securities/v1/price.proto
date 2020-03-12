@@ -12,8 +12,11 @@ option php_namespace = "Brymck\\Securities\\V1";
 
 import "brymck/dates/v1/date.proto";
 
-// Price is a date and price.
+// A combination of a date and price.
 message Price {
+  // A date.
   brymck.dates.v1.Date date = 1;
+
+  // A price.
   double price = 2;
 }
