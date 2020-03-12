@@ -25,12 +25,13 @@ jobs:
       - name: Print versions
         run: make version
       - name: Check out generated Go library repo
-        if: github.ref == 'refs/heads/master'
         uses: actions/checkout@v2
         with:
           repository: brymck/genproto
           token: ${{ secrets.REPO_TOKEN }}
           path: deployments/genproto
+      - name: Unshallow generated Go library
+        run: git fetch --prune --unshallow --git-dir=deployments/genproto
       - name: Generate and build Go libraries
         run: make build-go
       - name: Deploy Go libraries
