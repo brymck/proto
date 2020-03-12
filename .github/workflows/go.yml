@@ -26,6 +26,13 @@ jobs:
         run: make version
       - name: Generate and build Go libraries
         run: make build-go
+      - name: Check out generated Go library repo
+        if: github.ref == 'refs/heads/master'
+        uses: actions/checkout@v2
+        with:
+          repository: brymck/genproto
+          token: ${{ secrets.PRIVATE_REPO_TOKEN }}
+          path: deployments/genproto
       - name: Deploy Go libraries
         if: github.ref == 'refs/heads/master'
         run: make deploy-go
