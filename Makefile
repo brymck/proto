@@ -224,7 +224,7 @@ packages/node/%/.deployed.dirstamp: packages/node/%/package-lock.json
 deploy-node: $(foreach package,$(PACKAGES),packages/node/$(package)/.deployed.dirstamp)
 
 packages/python/%/.deployed.dirstamp: packages/python/%/.dirstamp
-	(cd $(dir $@) && twine upload -r local dist/*)
+	(cd $(dir $@) && twine upload dist/*)
 	touch $@
 deploy-python: $(foreach package,$(PACKAGES),packages/python/$(package)/.deployed.dirstamp)
 
