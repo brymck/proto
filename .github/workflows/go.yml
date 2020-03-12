@@ -24,16 +24,8 @@ jobs:
         run: pip install --requirement requirements.package.txt
       - name: Print versions
         run: make version
-      - name: Check out generated Go library repo
-        uses: actions/checkout@v2
-        with:
-          repository: brymck/genproto
-          token: ${{ secrets.REPO_TOKEN }}
-          path: deployments/genproto
-      - name: Unshallow generated Go library
-        run: cd deployments/genproto && git fetch --prune --unshallow
       - name: Generate and build Go libraries
         run: make build-go
       - name: Deploy Go libraries
         if: github.ref == 'refs/heads/master'
-        run: make deploy-go
+        run: make deploy-go GITHUB_TOKEN=${{ secrets.REPO_TOKEN }}

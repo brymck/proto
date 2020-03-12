@@ -205,7 +205,7 @@ config/.dirstamp: config/api_descriptor.pb
 deploy-config: config/.dirstamp
 
 deployments/genproto/go.mod: $(foreach package,$(PACKAGES),packages/go/$(package)/.dirstamp)
-	[ -d $(dir $@) ] && git pull $(dir $@) || git clone --depth 1 git@github.com:brymck/genproto.git $(dir $@)
+	[ -d $(dir $@) ] && git pull $(dir $@) || git clone --depth 1 https://$(GITHUB_TOKEN)@github.com:brymck/genproto.git $(dir $@)
 	rm -rf $(dir $@)/$(PARENT_PACKAGE)
 	cp -r packages/go/ $(dir $@)/$(PARENT_PACKAGE)
 	find $(dir $@)/$(PARENT_PACKAGE) -name .dirstamp -delete
