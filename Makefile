@@ -12,7 +12,7 @@ LANGUAGES := go java node python
 # unique release names for languages that expect that convention (e.g. Node.js).
 LAST_TAG = $(shell git describe --exact-match HEAD 2>/dev/null)
 ifeq ("$(LAST_TAG)","")
-LAST_TAG = $(shell git describe --abbrev=0)
+LAST_TAG = $(shell git tag --sort=-refname --list 'v[0-9]*' | head -1)
 IS_RELEASE = false
 else
 IS_RELEASE = true
@@ -23,6 +23,12 @@ BASE_VERSION = $(subst v,,$(LAST_TAG))
 all: dependencies generate package build
 
 prototool: dependencies/descriptor_set.json dependencies/descriptor_set.pb generate-code
+
+version:
+	@echo "LAST_TAG: $(LAST_TAG)"
+	@echo "IS_RELEASE: $(IS_RELEASE)"
+	@echo "COMMITS_SINCE_LAST_TAG: $(COMMITS_SINCE_LAST_TAG)"
+	@echo "BASE_VERSION: $(BASE_VERSION)"
 
 lint:
 	$(PROTOTOOL) lint .

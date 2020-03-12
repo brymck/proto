@@ -20,6 +20,8 @@ jobs:
           python-version: 3.8
       - name: Install Python dependencies
         run: pip install --requirement requirements.package.txt
+      - name: Print versions
+        run: make version
       - name: Generate and build Go libraries
         run: make build-go
       - name: Deploy Go libraries
