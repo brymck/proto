@@ -12,6 +12,12 @@ jobs:
     steps:
       - name: Check out repo
         uses: actions/checkout@v2
+      - name: Set up Python 3.8
+        uses: actions/setup-python@v1
+        with:
+          python-version: 3.8
+      - name: Install Python dependencies
+        run: pip install --requirement requirements.package.txt
       - name: Generate and build Go libraries
         run: make build-go
       - name: Deploy Go libraries
