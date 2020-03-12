@@ -9,6 +9,11 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+      OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+      OSSRH_GPG_PASSPHRASE: ${{ secrets.OSSRH_GPG_PASSPHRASE }}
+      OSSRH_GPG_KEYNAME: ${{ secrets.OSSRH_GPG_KEYNAME }}
     steps:
       - name: Check out repo
         uses: actions/checkout@v2
@@ -26,6 +31,10 @@ jobs:
         uses: actions/setup-java@v1
         with:
           java-version: 1.8
+      - name: Set up ~/.m2/settings.xml
+        run: cp config/settings.xml ~/.m2/settings.xml
+      - name: Import GPG key
+        run: echo "${{ secrets.OSSRH_GPG_KEY }}" | base64 --decode | gpg --import --no-tty --batch --yes
       - name: Generate and build artifacts
         run: make build-java
       - name: Deploy artifacts
