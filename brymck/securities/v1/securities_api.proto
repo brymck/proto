@@ -16,18 +16,21 @@ import "brymck/securities/v1/security.proto";
 
 // SecuritiesAPI provides access to securities.
 service SecuritiesAPI {
-  // GetSecurity retrieves a full security data object.
+  // Retrieve a full security object.
   rpc GetSecurity(GetSecurityRequest) returns (GetSecurityResponse);
-  // GetSecurity inserts a new security.
+  // Insert a new security.
   rpc InsertSecurity(InsertSecurityRequest) returns (InsertSecurityResponse);
-  // GetPrices retrieves the prices for a specified security.
+  // Retrieve security prices.
   rpc GetPrices(GetPricesRequest) returns (GetPricesResponse);
-  // UpdatePrices updates prices.
+  // Update security prices.
   rpc UpdatePrices(UpdatePricesRequest) returns (UpdatePricesResponse);
 }
 
+// A request for security information.
 message GetSecurityRequest {
+  // A unique identifier for a security.
   uint64 id = 1;
+  // The main symbol for the security per market convention.
   string symbol = 2;
 }
 

@@ -16,7 +16,6 @@ import "brymck/dates/v1/date.proto";
 message Price {
   // A date.
   brymck.dates.v1.Date date = 1;
-
   // A price.
   double price = 2;
 }

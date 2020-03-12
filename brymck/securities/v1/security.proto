@@ -10,10 +10,14 @@ option java_package = "com.github.brymck.securities.v1";
 option objc_class_prefix = "BSX";
 option php_namespace = "Brymck\\Securities\\V1";
 
-// Security is the main security object.
+// A security object.
 message Security {
+  // A unique identifier.
   uint64 id = 1;
+  // The main symbol per market convention.
   string symbol = 2;
+  // A human-readable name.
   string name = 3;
+  // The latest price.
   double price = 4;
 }
