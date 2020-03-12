@@ -37,7 +37,7 @@ jobs:
         uses: actions/cache@v1
         with:
           path: ~/.cache/pip
-          key: ${{ runner.os }}-pip-${{ hashFiles('templates/python/requirements.txt.jinja2') }}
+          key: ${{ runner.os }}-pip-${{ hashFiles('templates/children/python/requirements.txt.jinja2') }}
           restore-keys: ${{ runner.os }}-pip-
       - name: Generate and build packages
         run: make build-python

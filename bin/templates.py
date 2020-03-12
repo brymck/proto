@@ -55,7 +55,7 @@ def determine_version(base_version, commits_since_last_tag, language, is_release
 
 
 def main(package, language, version):
-    templates_dir = project_dir / 'templates' / language
+    templates_dir = project_dir / 'templates' / 'children' / language
     dependencies = get_dependencies(package)
     artifact_name = package
     artifact_version = version

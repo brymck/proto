@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com.github.brymck</groupId>
+    <artifactId>brymck-io-parent</artifactId>
+    <version>{{ artifactVersion }}</version>
+    <name>brymck-io-parent</name>
+    <description>brymck.io parent</description>
+    <url>https://github.com/brymck/proto</url>
+    <packaging>pom</packaging>
+
+    <modules>
+        <module>calendar</module>
+        <module>dates</module>
+        <module>risk</module>
+        <module>securities</module>
+    </modules>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-deploy-plugin</artifactId>
+                <configuration>
+                    <skip>true</skip>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

@@ -41,7 +41,7 @@ jobs:
         uses: actions/cache@v1
         with:
           path: ~/.m2/repository
-          key: ${{ runner.os }}-maven-${{ hashFiles('templates/java/pom.xml.jinja2') }}
+          key: ${{ runner.os }}-maven-${{ hashFiles('templates/children/java/pom.xml.jinja2') }}
           restore-keys: ${{ runner.os }}-maven-
       - name: Generate and build artifacts
         run: make build-java
