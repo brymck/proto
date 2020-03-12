@@ -24,8 +24,6 @@ jobs:
         run: pip install --requirement requirements.package.txt
       - name: Print versions
         run: make version
-      - name: Generate and build Go libraries
-        run: make build-go
       - name: Check out generated Go library repo
         if: github.ref == 'refs/heads/master'
         uses: actions/checkout@v2
@@ -33,6 +31,8 @@ jobs:
           repository: brymck/genproto
           token: ${{ secrets.REPO_TOKEN }}
           path: deployments/genproto
+      - name: Generate and build Go libraries
+        run: make build-go
       - name: Deploy Go libraries
         if: github.ref == 'refs/heads/master'
         run: make deploy-go

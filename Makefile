@@ -209,6 +209,7 @@ deployments/genproto/go.mod: $(foreach package,$(PACKAGES),packages/go/$(package
 	rm -rf $(dir $@)/$(PARENT_PACKAGE)
 	cp -r packages/go/ $(dir $@)/$(PARENT_PACKAGE)
 	find $(dir $@)/$(PARENT_PACKAGE) -name .dirstamp -delete
+	(cd $(dir $@) && go mod tidy)
 	(cd $(dir $@) && git add --all && git diff --cached --quiet || (git commit --message Update && git push))
 
 deploy-go: deployments/genproto/go.mod
