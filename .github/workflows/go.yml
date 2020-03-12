@@ -31,7 +31,7 @@ jobs:
           token: ${{ secrets.REPO_TOKEN }}
           path: deployments/genproto
       - name: Unshallow generated Go library
-        run: git fetch --prune --unshallow --git-dir=deployments/genproto
+        run: cd deployments/genproto && git fetch --prune --unshallow
       - name: Generate and build Go libraries
         run: make build-go
       - name: Deploy Go libraries
